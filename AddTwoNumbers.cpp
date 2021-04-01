@@ -56,6 +56,7 @@ public:
 
       prev = current;
     }
+
     return head;
   }
 };
