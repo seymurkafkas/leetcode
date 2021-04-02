@@ -1,6 +1,17 @@
-class Solution {
+#include <bits/stdc++.h>
+
+class Solution
+{
 public:
-    bool isValid(string s) {
-        
+    bool isValid(string s)
+    {
+
+        std::stack<char> pushdownAutomaton;
+        for (const auto &currentChar : s)
+        {
+            if(s== '(' || s == '{' || s== '['){
+                pushdownAutomaton.push
+            }
+        }
     }
 };
