@@ -1,5 +1,25 @@
 #include <bits/stdc++.h>
 
+char oppositeBracket(char enclosingBracket)
+{
+
+    char res;
+
+    switch (enclosingBracket)
+    {
+
+    case ']':
+        res = '[';
+        break;
+    case '}':
+        res = '{';
+        break;
+    case ')':
+        res = '(';
+        break;
+    }
+    return res;
+}
 class Solution
 {
 public:
@@ -9,15 +29,19 @@ public:
         std::stack<char> pushdownAutomaton;
         for (const auto &currentChar : s)
         {
-            if (s == '(' || s == '{' || s == '[')
+            if (currentChar == '(' || currentChar == '{' || currentChar == '[')
             {
-                pushdownAutomaton.push(s);
+                pushdownAutomaton.push(currentChar);
             }
             else
             {
-                if (pushdownAutomaton.empty() || pushdownAutomaton.pop() != oppositeBracket(currentChar))
+                if (pushdownAutomaton.empty() || pushdownAutomaton.top() != oppositeBracket(currentChar))
                 {
                     return false;
+                }
+                else
+                {
+                    pushdownAutomaton.pop();
                 }
             }
         }
