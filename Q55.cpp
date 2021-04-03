@@ -6,8 +6,9 @@ public:
     bool canJump(std::vector<int> &nums)
     {
         int length = nums.size();
-        std::vector<bool> memo(false, length);
-        nums.back() = true;
+
+        bool *memo = new bool[length]();
+        memo[length - 1] = true;
         for (int i = length - 2; i >= 0; --i)
         {
             if (nums[i] + i > length - 1)
@@ -23,6 +24,7 @@ public:
                     if (memo[k + i])
                     {
                         memo[i] = true;
+                        break;
                     }
                 }
             }
