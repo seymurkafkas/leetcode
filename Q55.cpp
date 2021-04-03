@@ -1,7 +1,33 @@
+#include <vector>
+
 class Solution
 {
 public:
-    bool canJump(vector<int> &nums)
+    bool canJump(std::vector<int> &nums)
     {
+        int length = nums.size();
+        std::vector<bool> memo(false, length);
+        nums.back() = true;
+        for (int i = length - 2; i >= 0; --i)
+        {
+            if (nums[i] + i > length - 1)
+            {
+                memo[i] = true;
+            }
+            else
+            {
+
+                for (int k = nums[i]; k > 0; --k)
+                {
+
+                    if (memo[k + i])
+                    {
+                        memo[i] = true;
+                    }
+                }
+            }
+        }
+
+        return memo[0];
     }
 };
