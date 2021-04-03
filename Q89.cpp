@@ -35,6 +35,7 @@ public:
                 currentDivisor *= 2;
             }
         }
+        return 0;
     }
 };
 
