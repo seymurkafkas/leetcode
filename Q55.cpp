@@ -7,29 +7,15 @@ public:
     {
         int length = nums.size();
 
-        bool *memo = new bool[length]();
-        memo[length - 1] = true;
+        int leftmostReachingIndex = length - 1;
         for (int i = length - 2; i >= 0; --i)
         {
-            if (nums[i] + i > length - 1)
+            if (nums[i] + i >= leftmostReachingIndex)
             {
-                memo[i] = true;
-            }
-            else
-            {
-
-                for (int k = nums[i]; k > 0; --k)
-                {
-
-                    if (memo[k + i])
-                    {
-                        memo[i] = true;
-                        break;
-                    }
-                }
+                leftmostReachingIndex = i;
             }
         }
 
-        return memo[0];
+        return leftmostReachingIndex == 0;
     }
 };
