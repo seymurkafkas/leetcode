@@ -1,13 +1,15 @@
+#include <vector>
+
 class Solution
 {
 public:
-    vector<vector<int>> getSkyline(vector<vector<int>> &buildings)
+    std::vector<std::vector<int>> getSkyline(std::vector<std::vector<int>> &buildings)
     {
     }
 };
 
 int main()
 {
-    vector<vector<int>> buildings;
+    std::vector<std::vector<int>> buildings;
     return 0;
 }
