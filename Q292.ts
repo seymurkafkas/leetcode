@@ -1,26 +1,21 @@
-const ACTION_SET = [1, 2, 3];
-
-const memoizedResults = {};
-
 function canWinNim(n: number): boolean {
   if (n <= 3) return true;
 
-  const memoizedResult = memoizedResults[n];
-  if (memoizedResult !== undefined) return memoizedResult;
+  const bufferLength = 3;
+  const buffer = new Array<boolean>(bufferLength);
 
-  let canWin: boolean = false;
+  buffer.fill(true);
 
-  for (const action of ACTION_SET) {
-    const canOpponentWin = canWinNim(n - action);
+  for (let i = 4; i <= n; i++) {
+    const canWin = !buffer[0] || !buffer[1] || !buffer[2];
 
-    canWin = !canOpponentWin;
-    if (canWin) break;
+    for (let j = 1; j < 3; j++) buffer[j - 1] = buffer[j];
+    buffer[2] = canWin;
   }
 
-  memoizedResults[n] = canWin;
-  return canWin;
+  return buffer[2];
 }
 
 (function main() {
-  console.log(canWinNim(1348820612));
+  console.log(canWinNim(4));
 })();
