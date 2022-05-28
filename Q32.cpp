@@ -21,18 +21,24 @@ public:
             auto current_element = s[i];
 
             if (current_element == '(')
-            {
                 pushdown_memory.emplace(i);
-            }
             else if (current_element == ')' && !pushdown_memory.empty())
             {
                 int left_paranthesis_index = pushdown_memory.top();
-                int size_of_current_match = i - left_paranthesis_index;
+                int size_of_current_match = i - left_paranthesis_index + 1;
                 pushdown_memory.pop();
 
                 if (!partial_solutions.empty())
                 {
                     auto last_solution = partial_solutions.top();
+
+                    if (last_solution.second > left_paranthesis_index)
+                    {
+                        partial_solutions.pop();
+
+                        if (!partial_solutions.empty())
+                            last_solution = partial_solutions.top();
+                    }
 
                     if (last_solution.second == left_paranthesis_index - 1)
                     {
@@ -46,19 +52,16 @@ public:
                 partial_solutions.emplace(new_partial_solution);
             }
             else
-            {
                 partial_solutions = std::move(std::stack<PartialSolution>());
-            }
         }
 
-        return max_length + 1;
+        return max_length;
     }
 };
 
-int main(int argc, char **argv)
+int main()
 {
-    std::string input = "(()(())))";
-
+    std::string input = "(()())";
     Solution a;
     std::cout << a.longestValidParentheses(input);
     return 0;
