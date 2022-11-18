@@ -85,6 +85,7 @@ struct State
                 j++;
             }
         }
+
         return match_count;
     }
 };
@@ -99,13 +100,21 @@ public:
         int s1_length = s1.length();
         int s2_length = s2.length();
 
+        if (s1_length == 0)
+            return s2 == s3;
+        else if (s2_length == 0)
+            return s1 == s3;
+
         auto initial_state = State::make_initial_state();
-        return isInterleaveMemoized(initial_state, s1, s2, s3);
+        auto initial_state_s2_start = State::make_initial_state();
+        initial_state_s2_start.turn = MOVE_S2;
+        return isInterleaveMemoized(initial_state, s1, s2, s3) || isInterleaveMemoized(initial_state_s2_start, s1, s2, s3);
     }
 
 private:
     bool isInterleaveMemoized(State state, string &s1, string &s2, string &s3)
     {
+        std::cout << state.s1_idx << " : " << state.s2_idx << std::endl;
         if (state.isTerminal(s1, s2, s3))
             return true;
 
@@ -127,9 +136,9 @@ private:
 
 int main(void)
 {
-    std::string s1("aabcc");
-    std::string s2("dbbca");
-    std::string s3("aadbbcbcac");
+    std::string s1("aa");
+    std::string s2("ab");
+    std::string s3("abaa");
     Solution solver;
     bool result = solver.isInterleave(s1, s2, s3);
     std::cout << result;
