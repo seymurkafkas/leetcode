@@ -2,6 +2,9 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <unordered_map>
+
+using namespace std;
 
 enum Turn
 {
@@ -28,6 +31,11 @@ struct State
     int s3_idx;
 
     Turn turn;
+
+    bool operator==(const State &other) const
+    {
+        return (s1_idx == other.s1_idx && s2_idx == other.s2_idx && s3_idx == other.s3_idx && turn == other.turn);
+    }
 
     static State make_initial_state()
     {
@@ -90,7 +98,18 @@ struct State
     }
 };
 
-using namespace std;
+struct StateHasher
+{
+    std::size_t operator()(const State &state) const
+    {
+        std::size_t hash_value = 0;
+        auto hasher = std::hash<int>();
+        hash_value ^= hasher(state.s1_idx) + 0x9e3779b9 + (hash_value << 6) + (hash_value >> 2);
+        hash_value ^= hasher(state.s2_idx) + 0x9e3779b9 + (hash_value << 6) + (hash_value >> 2);
+        hash_value ^= hasher(state.turn) + 0x9e3779b9 + (hash_value << 6) + (hash_value >> 2);
+        return hash_value;
+    }
+};
 
 class Solution
 {
@@ -105,32 +124,38 @@ public:
         else if (s2_length == 0)
             return s1 == s3;
 
+        std::unordered_map<State, bool, StateHasher> memoized_solutions;
+
         auto initial_state = State::make_initial_state();
         auto initial_state_s2_start = State::make_initial_state();
         initial_state_s2_start.turn = MOVE_S2;
-        return isInterleaveMemoized(initial_state, s1, s2, s3) || isInterleaveMemoized(initial_state_s2_start, s1, s2, s3);
+        return isInterleaveMemoized(initial_state, s1, s2, s3, memoized_solutions) || isInterleaveMemoized(initial_state_s2_start, s1, s2, s3, memoized_solutions);
     }
 
 private:
-    bool isInterleaveMemoized(State state, string &s1, string &s2, string &s3)
+    bool isInterleaveMemoized(State state, string &s1, string &s2, string &s3, std::unordered_map<State, bool, StateHasher> &dp)
     {
-        std::cout << state.s1_idx << " : " << state.s2_idx << std::endl;
+        if (dp.find(state) != dp.end())
+            return dp[state];
+
         if (state.isTerminal(s1, s2, s3))
             return true;
 
         int match_length = state.getMatchLength(s1, s2, s3);
 
+        bool is_interleave = false;
         for (int i = 0; i < match_length; i++)
         {
             Action permissible_action = Action::make_action(i + 1);
             State next_state = state.next_state(permissible_action);
 
-            bool is_interleave = isInterleaveMemoized(next_state, s1, s2, s3);
+            is_interleave = isInterleaveMemoized(next_state, s1, s2, s3, dp);
             if (is_interleave)
-                return true;
+                break;
         }
 
-        return false;
+        dp[state] = is_interleave;
+        return is_interleave;
     }
 };
 
